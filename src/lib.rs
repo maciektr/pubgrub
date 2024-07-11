@@ -229,3 +229,5 @@ pub mod version;
 pub mod version_set;
 
 mod internal;
+
+pub use internal::core::State;
