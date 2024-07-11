@@ -82,7 +82,18 @@ pub fn resolve<DP: DependencyProvider>(
     package: DP::P,
     version: impl Into<DP::V>,
 ) -> Result<SelectedDependencies<DP>, PubGrubError<DP>> {
-    let mut state: State<DP> = State::init(package.clone(), version.into());
+    let state: State<DP> = State::init(package.clone(), version.into());
+    resolve_state(dependency_provider, state, package)
+}
+
+/// Resolve, but accepts preset state.
+/// Finds a set of packages satisfying dependency bounds for a given package + version pair.
+pub fn resolve_state<DP: DependencyProvider>(
+    dependency_provider: &DP,
+    state: State<DP>,
+    package: DP::P,
+) -> Result<SelectedDependencies<DP>, PubGrubError<DP>> {
+    let mut state = state;
     let mut added_dependencies: Map<DP::P, Set<DP::V>> = Map::default();
     let mut next = package;
     loop {
